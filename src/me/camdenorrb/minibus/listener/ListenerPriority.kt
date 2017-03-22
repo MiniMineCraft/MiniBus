@@ -12,7 +12,7 @@ enum class ListenerPriority {
 	companion object {
 
 		val DEFAULT_COMPARATOR = Comparator<ListenerPriority> { o1, o2 ->
-			if (o1 == o2) 1 else o1.ordinal.compareTo(o2.ordinal)
+			if (o1 == o2) 1 else o1.compareTo(o2)
 		}
 
 	}

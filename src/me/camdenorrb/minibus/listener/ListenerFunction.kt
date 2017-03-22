@@ -9,7 +9,7 @@ import kotlin.reflect.KFunction
 class ListenerFunction(val listener: MiniListener, val priority: ListenerPriority, val function: KFunction<*>): Comparable<ListenerFunction> {
 
 	override fun compareTo(other: ListenerFunction): Int {
-		return if (priority == other.priority) 1 else priority.ordinal.compareTo(other.priority.ordinal)
+		return if (priority == other.priority) 1 else priority.compareTo(other.priority)
 	}
 
 }
