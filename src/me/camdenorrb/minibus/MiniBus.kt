@@ -25,7 +25,7 @@ class MiniBus {
 	fun cleanUp() { listenerMap.clear() }
 
 
-	fun <T: MiniEvent> fire(event: T): T {
+	operator fun <T: MiniEvent> invoke(event: T): T {
 		listenerMap[event::class]?.forEach { it.function.call(it.listener, event) }
 		return event
 	}
