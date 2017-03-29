@@ -36,6 +36,9 @@ internal class MiniBusTest: MiniListener {
 		if (calledEvent.abc != "abc") error("The events were not called in order!")
 		if (calledEvent.cancelled.not()) error("Event was not cancelled after the last listener!")
 
+		// Do a warm up before benchmarking.
+		for (i in 0..1000) {}
+
 		val benchmarkEvent = BenchmarkEvent()
 		val benchResults = measureNanoTime { miniBus(benchmarkEvent) }
 
