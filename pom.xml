@@ -31,14 +31,6 @@
             <type>jar</type>
         </dependency>
 
-        <!--Kotlin Test-->
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!--Kotlin Test Junit-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -55,6 +47,8 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
