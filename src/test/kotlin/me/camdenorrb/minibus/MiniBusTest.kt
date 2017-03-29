@@ -27,6 +27,7 @@ internal class MiniBusTest: MiniListener {
 
 		if (calledEvent.count != 3) error("Not all events were called!")
 		if (calledEvent.abc != "abc") error("The events were not called in order!")
+		if (calledEvent.cancelled.not()) error("Event was not cancelled after the last listener!")
 	}
 
 	@After
@@ -49,6 +50,7 @@ internal class MiniBusTest: MiniListener {
 	fun onTest3(event: TestEvent) {
 		event.count++
 		event.abc += 'c'
+		event.cancelled = true
 	}
 
 }
