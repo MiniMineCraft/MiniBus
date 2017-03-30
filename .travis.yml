@@ -6,4 +6,4 @@ jdk:
 
 sudo: false
 
-script: mvn test -B
+script: mvn clean test
