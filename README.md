@@ -1,8 +1,6 @@
-[![Build Status](https://travis-ci.org/MiniMineCraft/MiniBus.svg?branch=master)](https://travis-ci.org/MiniMineCraft/MiniBus)
 
-
-<h2>MineMineCraft's official EventBus.</h2>
-
+## MineMineCraft's official EventBus.
+[![Travis](https://img.shields.io/travis/MiniMineCraft/MiniBus.svg)](https://travis-ci.org/MiniMineCraft/MiniBus)
 
 To Build: `mvn clean package`
 
