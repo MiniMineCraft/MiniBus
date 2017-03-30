@@ -9,4 +9,4 @@ To Build: `mvn clean package`
 
 To Test/Benchmark `mvn clean test`
 
-To install on your local maven repo: `mvn clean package install`
+To compile and install on your local maven repo: `mvn clean package install`
