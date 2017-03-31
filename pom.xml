@@ -49,7 +49,16 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Test JMH -->
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>1.18</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
+
 
     <build>
         <sourceDirectory>src/main/kotlin</sourceDirectory>

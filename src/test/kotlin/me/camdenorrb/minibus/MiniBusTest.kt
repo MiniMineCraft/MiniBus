@@ -50,25 +50,26 @@ internal class MiniBusTest: MiniListener {
 
 
 	@EventWatcher
-	fun onBenchMark(event: BenchmarkEvent) = Unit
+	fun BenchmarkEvent.onBenchMark() = Unit
+
 
 	@EventWatcher(FIRST)
-	fun onTest1(event: TestEvent) {
-		event.count++
-		event.abc += 'a'
+	fun TestEvent.onTest1() {
+		count++
+		abc += 'a'
 	}
 
 	@EventWatcher(NORMAL)
-	fun onTest2(event: TestEvent) {
-		event.count++
-		event.abc += 'b'
+	fun TestEvent.onTest2() {
+		count++
+		abc += 'b'
 	}
 
 	@EventWatcher(LAST)
-	fun onTest3(event: TestEvent) {
-		event.count++
-		event.abc += 'c'
-		event.cancelled = true
+	fun TestEvent.onTest3() {
+		count++
+		abc += 'c'
+		cancelled = true
 	}
 
 }

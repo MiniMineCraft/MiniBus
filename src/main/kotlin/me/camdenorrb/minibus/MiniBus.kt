@@ -6,11 +6,14 @@ import me.camdenorrb.minibus.event.EventWatcher
 import me.camdenorrb.minibus.event.MiniEvent
 import me.camdenorrb.minibus.listener.ListenerFunction
 import me.camdenorrb.minibus.listener.MiniListener
+import java.lang.reflect.Modifier
 import java.util.*
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
+import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.jvmErasure
 
 /**
@@ -47,9 +50,10 @@ class MiniBus {
 	fun register(vararg listeners: MiniListener) { listeners.forEach { register(it) } }
 
 	fun register(listener: MiniListener) {
-		listener::class.memberFunctions.forEach {
+		listener::class.declaredFunctions.forEach {
+			Modifier.isStatic(it.javaMethod?.modifiers ?: return)
 			val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
-			val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<out MiniEvent> ?: return@forEach
+			val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<MiniEvent> ?: return@forEach
 
 			listenerMap.computeIfAbsent(event, { sortedSetOf() }).add(ListenerFunction(listener, priority, it))
 		}
