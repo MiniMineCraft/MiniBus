@@ -9,7 +9,7 @@ import kotlin.reflect.KFunction
 
 class ListenerFunction(val listener: MiniListener, val priority: ListenerPriority, val function: KFunction<*>): Comparable<ListenerFunction> {
 
-	operator fun <T : MiniEvent> invoke(event: T) {
+	operator fun invoke(event: MiniEvent) {
 		function.call(listener, event)
 	}
 
