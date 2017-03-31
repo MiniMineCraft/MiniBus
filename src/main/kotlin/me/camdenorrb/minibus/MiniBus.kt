@@ -46,7 +46,6 @@ class MiniBus {
 		}
 	}
 
-
 	fun register(vararg listeners: MiniListener) { listeners.forEach { register(it) } }
 
 	fun register(listener: MiniListener) {
