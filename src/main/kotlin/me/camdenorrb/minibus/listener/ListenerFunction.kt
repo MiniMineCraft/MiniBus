@@ -9,9 +9,8 @@ import kotlin.reflect.KFunction
 
 class ListenerFunction(val listener: MiniListener, val priority: ListenerPriority, val function: KFunction<*>): Comparable<ListenerFunction> {
 
-	operator fun invoke(event: MiniEvent) {
-		function.call(listener, event)
-	}
+	operator fun invoke(event: MiniEvent) = function.call(listener, event)
+
 
 	override fun compareTo(other: ListenerFunction): Int {
 		return if (priority == other.priority) 1 else priority.compareTo(other.priority)
