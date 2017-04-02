@@ -29,7 +29,7 @@ class MiniBus {
 
 
 	operator fun <T: MiniEvent> invoke(event: T): T {
-		listenerMap[event::class]?.forEach { it(event) }
+		listenerMap[event::class]?.let { for (element in it) element(event) }
 		return event
 	}
 
@@ -46,7 +46,7 @@ class MiniBus {
 		}
 	}
 
-	fun register(vararg listeners: MiniListener) { listeners.forEach { register(it) } }
+	fun register(vararg listeners: MiniListener) = listeners.forEach { register(it) }
 
 	fun register(listener: MiniListener) {
 		listener::class.declaredFunctions.forEach {
