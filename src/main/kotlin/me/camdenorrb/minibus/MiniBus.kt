@@ -29,7 +29,7 @@ class MiniBus {
 
 
 	operator fun <T: MiniEvent> invoke(event: T): T {
-		listenerMap[event::class]?.let { for (element in it) element(event) }
+		listenerMap[event::class]?.forEach { it(event) }
 		return event
 	}
 
