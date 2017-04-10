@@ -7,7 +7,7 @@
 
     <groupId>me.camdenorrb</groupId>
     <artifactId>MiniBus</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.3</version>
 
     <properties>
         <kotlin.version>1.1.1</kotlin.version>

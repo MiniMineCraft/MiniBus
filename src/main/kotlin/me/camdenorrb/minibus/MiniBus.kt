@@ -10,6 +10,7 @@ import java.lang.reflect.Modifier
 import java.util.*
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberFunctions
@@ -50,7 +51,9 @@ class MiniBus {
 
 	fun register(listener: MiniListener) {
 		listener::class.declaredFunctions.forEach {
-			Modifier.isStatic(it.javaMethod?.modifiers ?: return)
+
+			if (it.visibility != KVisibility.PUBLIC || Modifier.isStatic(it.javaMethod?.modifiers ?: return)) return@forEach
+
 			val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
 			val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<MiniEvent> ?: return@forEach
 
