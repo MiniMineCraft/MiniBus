@@ -114,6 +114,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### Compile folder ###
+compile/
+
+
 ### Maven ###
 target/
 pom.xml.tag
