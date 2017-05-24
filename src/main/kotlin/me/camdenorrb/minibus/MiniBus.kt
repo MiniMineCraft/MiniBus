@@ -13,7 +13,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.jvmErasure
 
@@ -36,16 +35,16 @@ class MiniBus {
 
 
 	fun unregister(listener: MiniListener, function: KCallable<*>) {
-		function.findAnnotation<EventWatcher>() ?: return
 		listenerMap.forEach { it.value.removeIf { listener == it.listener && function == it.function } }
 	}
 
 	fun unregister(listener: MiniListener) {
-		listener::class.memberFunctions.forEach { function ->
+		listener::class.declaredFunctions.forEach { function ->
 			function.findAnnotation<EventWatcher>() ?: return@forEach
-			listenerMap.forEach { it.value.removeIf { listener == it.listener && function == it.function } }
+			unregister(listener, function)
 		}
 	}
+
 
 	fun register(vararg listeners: MiniListener) = listeners.forEach { register(it) }
 
