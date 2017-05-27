@@ -7,7 +7,6 @@ package me.camdenorrb.minibus.event
 open class CancellableMiniEvent: MiniEvent() {
 
 	var cancelled: Boolean = false
-		protected set
 
 }
 
