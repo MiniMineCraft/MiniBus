@@ -7,7 +7,7 @@
 
     <groupId>me.camdenorrb</groupId>
     <artifactId>MiniBus</artifactId>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
