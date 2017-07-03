@@ -1,7 +1,7 @@
 
 ## MineMineCraft's official EventBus. [![Travis](https://img.shields.io/travis/MiniMineCraft/MiniBus.svg)](https://travis-ci.org/MiniMineCraft/MiniBus)
 
-Depends: { kotlin-stdlib-jre8 (1.1.3), kotlin-reflect (1.1.3)}
+Depends: { kotlin-stdlib-jre8 (1.1.3), kotlin-reflect (1.1.3) }
 
 To Build: `mvn clean package`
 
