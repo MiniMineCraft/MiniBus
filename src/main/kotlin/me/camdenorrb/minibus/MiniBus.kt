@@ -19,7 +19,6 @@ import kotlin.reflect.jvm.jvmErasure
 /**
  * Created by camdenorrb on 3/5/17.
  */
-
 class MiniBus {
 
 	val listenerMap = mutableMapOf<KClass<out MiniEvent>, TreeSet<ListenerFunction>>()
@@ -28,36 +27,31 @@ class MiniBus {
 	fun cleanUp() { listenerMap.clear() }
 
 
-	operator fun <T: MiniEvent> invoke(event: T): T {
+	operator fun <T : MiniEvent> invoke(event: T): T {
 		listenerMap[event::class]?.forEach { it(event) }
 		return event
 	}
 
 
-	fun unregister(listener: MiniListener, function: KCallable<*>) {
-		listenerMap.forEach { it.value.removeIf { listener == it.listener && function == it.function } }
+	fun unregister(listener: MiniListener, function: KCallable<*>) = listenerMap.forEach {
+		it.value.removeIf { listener == it.listener && function == it.function }
 	}
 
-	fun unregister(listener: MiniListener) {
-		listener::class.declaredFunctions.forEach { function ->
-			function.findAnnotation<EventWatcher>() ?: return@forEach
-			unregister(listener, function)
-		}
+	fun unregister(listener: MiniListener) = listener::class.declaredFunctions.forEach {
+		if (it.findAnnotation<EventWatcher>() != null) unregister(listener, it)
 	}
 
 
 	fun register(vararg listeners: MiniListener) = listeners.forEach { register(it) }
 
-	fun register(listener: MiniListener) {
-		listener::class.declaredFunctions.forEach {
+	fun register(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 
-			if (it.visibility != PUBLIC || it.javaMethod?.modifiers?.let { isStatic(it) } == null) return@forEach
+		if (it.visibility != PUBLIC || it.javaMethod?.modifiers?.let { isStatic(it) } == null) return@forEach
 
-			val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
-			val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<MiniEvent> ?: return@forEach
+		val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
+		val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<MiniEvent> ?: return@forEach
 
-			listenerMap.computeIfAbsent(event, { sortedSetOf() }).add(ListenerFunction(listener, priority, it))
-		}
+		listenerMap.getOrPut(event, { sortedSetOf() }).add(ListenerFunction(listener, priority, it))
 	}
 
 }

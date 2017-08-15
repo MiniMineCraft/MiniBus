@@ -28,16 +28,17 @@ internal class MiniBusTest: MiniListener {
 
 	@Test
 	fun eventTest() {
+
 		val calledEvent = miniBus(TestEvent())
 
 		println("Count: ${calledEvent.count}  Order: ${calledEvent.abc}")
 
-		if (calledEvent.count != 3) error("Not all events were called!")
-		if (calledEvent.abc != "abc") error("The events were not called in order!")
-		if (calledEvent.cancelled.not()) error("Event was not cancelled after the last listener!")
+		check(calledEvent.count == 6) { "Not all events were called!" }
+		check(calledEvent.abc == "aabbcc") { "The events were not called in order!" }
+		check(calledEvent.cancelled) { "Event was not cancelled after the last listener!" }
 
 		// Do a warm up before benchmarking.
-		for (i in 0..1000) {}
+		for (i in 0..100000) {}
 
 		val benchmarkEvent = BenchmarkEvent()
 		val benchResults = measureNanoTime { miniBus(benchmarkEvent) }
@@ -59,14 +60,32 @@ internal class MiniBusTest: MiniListener {
 		abc += 'a'
 	}
 
-	@EventWatcher(NORMAL)
+	@EventWatcher(FIRST)
 	fun TestEvent.onTest2() {
+		count++
+		abc += 'a'
+	}
+
+	@EventWatcher(NORMAL)
+	fun TestEvent.onTest3() {
+		count++
+		abc += 'b'
+	}
+
+	@EventWatcher(NORMAL)
+	fun TestEvent.onTest4() {
 		count++
 		abc += 'b'
 	}
 
 	@EventWatcher(LAST)
-	fun TestEvent.onTest3() {
+	fun TestEvent.onTest5() {
+		count++
+		abc += 'c'
+	}
+
+	@EventWatcher(LAST)
+	fun TestEvent.onTest6() {
 		count++
 		abc += 'c'
 		cancelled = true

@@ -6,7 +6,6 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/**/workspace.xml
 .idea/**/tasks.xml
 .idea/dictionaries
 
@@ -21,7 +20,6 @@
 
 # Gradle:
 .idea/**/gradle.xml
-.idea/**/libraries
 
 # CMake
 cmake-build-debug/
@@ -65,7 +63,6 @@ fabric.properties
 
 ### Java ###
 # Compiled class file
-*.class
 
 # Log file
 *.log
@@ -77,7 +74,6 @@ fabric.properties
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.ear
 *.zip
@@ -115,7 +111,6 @@ Temporary Items
 .apdisk
 
 ### Compile folder ###
-compile/
 
 
 ### Maven ###
@@ -154,3 +149,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/java,maven,macos,windows,intellij
+.idea/
