@@ -8,6 +8,3 @@ sudo: false
 
 # Skips install "gradle assemble"
 install: true
-
-# Runs the testing scripts
-script: "gradle test"
