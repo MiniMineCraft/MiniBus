@@ -1,3 +1,6 @@
+os: linux
+dist: zesty
+
 language: java
 
 jdk:
