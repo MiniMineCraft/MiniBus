@@ -3,7 +3,6 @@
 package me.camdenorrb.minibus
 
 import me.camdenorrb.minibus.event.EventWatcher
-import me.camdenorrb.minibus.event.MiniEvent
 import me.camdenorrb.minibus.listener.ListenerFunction
 import me.camdenorrb.minibus.listener.MiniListener
 import java.lang.reflect.Modifier.isStatic
@@ -13,6 +12,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility.PUBLIC
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.javaMethod
 import kotlin.reflect.jvm.jvmErasure
 
@@ -21,14 +21,14 @@ import kotlin.reflect.jvm.jvmErasure
  */
 class MiniBus {
 
-	val listenerMap = mutableMapOf<KClass<out MiniEvent>, TreeSet<ListenerFunction>>()
+	val listenerMap = mutableMapOf<KClass<out Any>, TreeSet<ListenerFunction>>()
 
 
 	fun cleanUp() { listenerMap.clear() }
 
 
-	operator fun <T : MiniEvent> invoke(event: T): T {
-		listenerMap[event::class]?.forEach { it(event) }
+	operator fun <T : Any> invoke(event: T): T {
+		listenerMap.filter { it.key.isInstance(event) }.forEach { it.value.forEach { it(event) } }
 		return event
 	}
 
@@ -46,10 +46,12 @@ class MiniBus {
 
 	fun register(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 
+		it.isAccessible = true
+
 		if (it.visibility != PUBLIC || it.javaMethod?.modifiers?.let { isStatic(it) } == null) return@forEach
 
 		val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
-		val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<MiniEvent> ?: return@forEach
+		val event = it.parameters.getOrNull(1)?.type?.jvmErasure as? KClass<Any> ?: return@forEach
 
 		listenerMap.getOrPut(event, { sortedSetOf() }).add(ListenerFunction(listener, priority, it))
 	}

@@ -1,6 +1,5 @@
 package me.camdenorrb.minibus.listener
 
-import me.camdenorrb.minibus.event.MiniEvent
 import kotlin.reflect.KFunction
 
 /**
@@ -9,7 +8,7 @@ import kotlin.reflect.KFunction
 
 class ListenerFunction(val listener: MiniListener, val priority: ListenerPriority, val function: KFunction<*>) : Comparable<ListenerFunction> {
 
-	operator fun invoke(event: MiniEvent) = function.call(listener, event)
+	operator fun invoke(event: Any) = function.call(listener, event)
 
 
 	override fun compareTo(other: ListenerFunction): Int {

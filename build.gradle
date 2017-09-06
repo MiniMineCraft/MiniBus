@@ -1,0 +1,47 @@
+group 'me.camdenorrb'
+version '1.1.1'
+
+buildscript {
+
+	ext {
+		kotlinVersion = '1.2-M2'
+	}
+
+    repositories {
+        maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+
+}
+
+apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'kotlin'
+
+repositories {
+    maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.2' }
+    mavenCentral()
+}
+
+dependencies {
+
+	testCompile "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+	testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+	testCompile "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+	testCompile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
+
+	compileOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+	compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlinVersion"
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}

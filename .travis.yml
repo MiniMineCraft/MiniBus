@@ -1,12 +1,4 @@
-os: linux
-dist: zesty
-
 language: java
 
 jdk:
   - oraclejdk8
-
-
-sudo: false
-
-script: mvn clean test

@@ -2,7 +2,6 @@ package me.camdenorrb.minibus
 
 import me.camdenorrb.minibus.event.CancellableMiniEvent
 import me.camdenorrb.minibus.event.EventWatcher
-import me.camdenorrb.minibus.event.MiniEvent
 import me.camdenorrb.minibus.listener.ListenerPriority.*
 import me.camdenorrb.minibus.listener.MiniListener
 import org.junit.After
@@ -14,7 +13,7 @@ import kotlin.system.measureNanoTime
  * Created by camdenorrb on 3/29/17.
  */
 
-internal class BenchmarkEvent: MiniEvent()
+internal class BenchmarkEvent
 
 internal class TestEvent(var count: Int = 0, var abc: String = ""): CancellableMiniEvent()
 
@@ -37,13 +36,20 @@ internal class MiniBusTest: MiniListener {
 		check(calledEvent.abc == "aabbcc") { "The events were not called in order!" }
 		check(calledEvent.cancelled) { "Event was not cancelled after the last listener!" }
 
-		// Do a warm up before benchmarking.
-		for (i in 0..100000) {}
+
+		var totalTime = 0L
 
 		val benchmarkEvent = BenchmarkEvent()
-		val benchResults = measureNanoTime { miniBus(benchmarkEvent) }
+		for (i in 1..10) totalTime += measureNanoTime { miniBus(benchmarkEvent) }
 
-		println("It took $benchResults nanoseconds to run the Benchmark event.")
+		println("10 * BenchEvent { Average: ${totalTime / 10}/ns Total: $totalTime/ns  }")
+		totalTime = 0
+
+		val meow = "Meow"
+		for (i in 1..10) totalTime += measureNanoTime { miniBus(meow) }
+
+		println("10 * NonExistent Event { Average: ${totalTime / 10}/ns Total: $totalTime/ns }")
+
 	}
 
 	@After
