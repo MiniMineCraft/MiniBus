@@ -3,7 +3,11 @@ language: java
 jdk:
   - oraclejdk8
 
-
+# Stops Travis CI from making a virtual machine for each build.
 sudo: false
 
+# Skips install "gradle assemble"
+install: true
+
+# Runs the testing scripts
 script: "gradle test"
