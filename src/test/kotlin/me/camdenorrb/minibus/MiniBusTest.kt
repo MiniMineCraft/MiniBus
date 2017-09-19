@@ -40,15 +40,22 @@ internal class MiniBusTest: MiniListener {
 		var totalTime = 0L
 
 		val benchmarkEvent = BenchmarkEvent()
-		for (i in 1..10) totalTime += measureNanoTime { miniBus(benchmarkEvent) }
 
-		println("10 * BenchEvent { Average: ${totalTime / 10}/ns Total: $totalTime/ns  }")
+		/* Warm Up */ for (i in 0..100_000) miniBus(benchmarkEvent)
+
+		for (i in 1..1000) totalTime += measureNanoTime { miniBus(benchmarkEvent) }
+
+		println("10 * BenchEvent { Average: ${totalTime / 1000}/ns Total: $totalTime/ns  }")
 		totalTime = 0
 
 		val meow = "Meow"
-		for (i in 1..10) totalTime += measureNanoTime { miniBus(meow) }
 
-		println("10 * NonExistent Event { Average: ${totalTime / 10}/ns Total: $totalTime/ns }")
+
+		/* Warm Up */ for (i in 0..100_000) miniBus(meow)
+
+		for (i in 1..1000) totalTime += measureNanoTime { miniBus(meow) }
+
+		println("10 * NonExistent Event { Average: ${totalTime / 1000}/ns Total: $totalTime/ns }")
 
 	}
 
