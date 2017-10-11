@@ -20,7 +20,9 @@ class MiniBus {
 	val listenerMap = mutableMapOf<KClass<out Any>, TreeSet<ListenerFunction>>()
 
 
-	fun cleanUp() { listenerMap.clear() }
+	fun cleanUp() {
+		listenerMap.clear()
+	}
 
 
 	operator fun <T : Any> invoke(event: T): T {
@@ -42,9 +44,9 @@ class MiniBus {
 
 	fun register(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 
-		it.isAccessible = true
-
 		if (it.visibility != PUBLIC) return
+
+		if (!it.isAccessible) it.isAccessible = true
 
 		val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
 		val event = it.parameters[1].type.jvmErasure as? KClass<Any> ?: return@forEach
