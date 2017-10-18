@@ -9,9 +9,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.system.measureNanoTime
 
-/**
- * Created by camdenorrb on 3/29/17.
- */
+
 
 internal class BenchmarkEvent
 

@@ -3,11 +3,13 @@
 package me.camdenorrb.minibus
 
 import me.camdenorrb.minibus.event.EventWatcher
-import me.camdenorrb.minibus.listener.ListenerFunction
+import me.camdenorrb.minibus.listener.ListenerPriority
+import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
 import me.camdenorrb.minibus.listener.MiniListener
-import java.util.*
+import me.camdenorrb.minibus.listener.table.ListenerTable
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.KVisibility.PUBLIC
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
@@ -17,30 +19,34 @@ import kotlin.reflect.jvm.jvmErasure
 
 class MiniBus {
 
-	val listenerMap = mutableMapOf<KClass<out Any>, TreeSet<ListenerFunction>>()
+	val listenerTable = ListenerTable()
 
 
 	fun cleanUp() {
-		listenerMap.clear()
+		listenerTable.map.clear()
 	}
 
 
 	operator fun <T : Any> invoke(event: T): T {
-		listenerMap.entries.find { it.key.isInstance(event) }?.value?.forEach { it(event) }
+		listenerTable.call(event)
 		return event
 	}
 
 
-	fun unregister(listener: MiniListener, function: KCallable<*>) = listenerMap.forEach {
-		it.value.removeIf { listener == it.listener && function == it.function }
-	}
+	fun unregister(callable: KCallable<Any>)
+		= listenerTable.remove(callable)
 
 	fun unregister(listener: MiniListener) = listener::class.declaredFunctions.forEach {
-		if (it.findAnnotation<EventWatcher>() != null) unregister(listener, it)
+		if (it.findAnnotation<EventWatcher>() != null) unregister(it as KCallable<Any>)
 	}
 
 
-	fun register(vararg listeners: MiniListener) = listeners.forEach { register(it) }
+	fun register(vararg listeners: MiniListener)
+		= listeners.forEach { register(it) }
+
+	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: (T) -> Unit)
+		= listenerTable.add(priority, block)
+
 
 	fun register(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 
@@ -49,9 +55,9 @@ class MiniBus {
 		if (!it.isAccessible) it.isAccessible = true
 
 		val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
-		val event = it.parameters[1].type.jvmErasure as? KClass<Any> ?: return@forEach
+		val event = it.parameters[1].type.jvmErasure as? KClass<Any> ?: error("Unable to register event!")
 
-		listenerMap.getOrPut(event, { sortedSetOf() }).add(ListenerFunction(listener, priority, it))
+		listenerTable.add(event, listener, it as KFunction<Any>, priority)
 	}
 
 }

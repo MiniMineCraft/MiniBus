@@ -1,11 +1,16 @@
 package me.camdenorrb.minibus.listener
 
-/**
- * Created by camdenorrb on 3/5/17.
- */
 
 enum class ListenerPriority {
 
 	FIRST, NORMAL, LAST;
+
+
+	companion object PriorityComparator : Comparator<ListenerPriority> {
+
+		override fun compare(current: ListenerPriority, other: ListenerPriority): Int
+			= if (current == other) 1 else current.compareTo(other)
+
+	}
 
 }
