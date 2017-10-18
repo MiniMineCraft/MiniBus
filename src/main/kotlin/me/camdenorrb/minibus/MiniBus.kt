@@ -52,6 +52,10 @@ class MiniBus {
 	fun register(vararg listeners: MiniListener)
 		= listeners.forEach { register(it) }
 
+
+	inline fun <reified T : Any> register(action: ListenerAction<T>, priority: ListenerPriority = NORMAL)
+		= listenerTable.add(priority, action)
+
 	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: (T) -> Unit)
 		= listenerTable.add(priority, block)
 
