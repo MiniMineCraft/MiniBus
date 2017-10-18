@@ -3,6 +3,7 @@
 package me.camdenorrb.minibus
 
 import me.camdenorrb.minibus.event.EventWatcher
+import me.camdenorrb.minibus.listener.ListenerAction
 import me.camdenorrb.minibus.listener.ListenerPriority
 import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
 import me.camdenorrb.minibus.listener.MiniListener
@@ -33,8 +34,15 @@ class MiniBus {
 	}
 
 
+	fun unregister(action: ListenerAction<Any>)
+		= listenerTable.remove(action)
+
 	fun unregister(callable: KCallable<Any>)
 		= listenerTable.remove(callable)
+
+	fun unregister(lambda: Any.() -> Unit)
+		= listenerTable.remove(lambda::invoke)
+
 
 	fun unregister(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 		if (it.findAnnotation<EventWatcher>() != null) unregister(it as KCallable<Any>)

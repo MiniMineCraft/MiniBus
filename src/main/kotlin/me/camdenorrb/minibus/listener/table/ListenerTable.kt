@@ -46,6 +46,10 @@ class ListenerTable {
 		= this[T::class]?.remove(priority)
 
 
+	fun remove(action: ListenerAction<Any>) = map.values.forEach {
+		it.values.forEach { it.remove(action) }
+	}
+
 	fun remove(callable: KCallable<Any>) = map.values.forEach {
 		it.values.forEach { it.removeIf { it.callable == callable } }
 	}
