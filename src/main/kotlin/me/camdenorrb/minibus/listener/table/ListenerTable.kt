@@ -14,7 +14,6 @@ import kotlin.reflect.KFunction
 
 class ListenerTable {
 
-	// NOTE: KFunction<Any> is usable as well
 	val map = mutableMapOf<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>()
 
 
