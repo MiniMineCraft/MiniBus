@@ -58,8 +58,8 @@ class ListenerTable {
 	}
 
 
-	inline fun <reified T : Any> add(action: ListenerAction<Any>, priority: ListenerPriority = NORMAL) {
-		this.add(T::class as KClass<Any>, action, priority)
+	inline fun <reified T : Any> add(action: ListenerAction<T>, priority: ListenerPriority = NORMAL) {
+		this.add(T::class as KClass<Any>, action as ListenerAction<Any>, priority)
 	}
 
 	inline fun <reified T : Any> add(instance: Any, function: KFunction<Any>, priority: ListenerPriority = NORMAL) {

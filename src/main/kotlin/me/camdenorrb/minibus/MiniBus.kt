@@ -54,7 +54,7 @@ class MiniBus {
 		= listeners.forEach { register(it) }
 
 
-	inline fun <reified T : Any> register(action: ListenerAction<Any>, priority: ListenerPriority = NORMAL)
+	inline fun <reified T : Any> register(action: ListenerAction<T>, priority: ListenerPriority = NORMAL)
 		= listenerTable.add<T>(action, priority)
 
 	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit)
