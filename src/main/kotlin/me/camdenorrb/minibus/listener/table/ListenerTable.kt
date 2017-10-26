@@ -3,6 +3,7 @@
 package me.camdenorrb.minibus.listener.table
 
 import me.camdenorrb.minibus.listener.ListenerAction
+import me.camdenorrb.minibus.listener.ListenerAction.Lambda
 import me.camdenorrb.minibus.listener.ListenerPriority
 import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
 import me.camdenorrb.minibus.listener.ListenerPriority.PriorityComparator
@@ -62,11 +63,11 @@ class ListenerTable {
 	}
 
 	inline fun <reified T : Any> add(instance: Any, function: KFunction<Any>, priority: ListenerPriority = NORMAL) {
-		this.add<T>(priority, ListenerAction.Function(instance, function))
+		this.add<T>(ListenerAction.Function(instance, function), priority)
 	}
 
-	inline fun <reified T : Any> add(priority: ListenerPriority = NORMAL, noinline block: T.() -> Any) {
-		this.add<T>(ListenerAction.Lambda(block) as ListenerAction.Lambda<Any>, priority)
+	inline fun <reified T : Any> add(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Any) {
+		this.add<T>(Lambda(block) as Lambda<Any>, priority)
 	}
 
 

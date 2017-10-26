@@ -4,6 +4,7 @@ package me.camdenorrb.minibus
 
 import me.camdenorrb.minibus.event.EventWatcher
 import me.camdenorrb.minibus.listener.ListenerAction
+import me.camdenorrb.minibus.listener.ListenerAction.Lambda
 import me.camdenorrb.minibus.listener.ListenerPriority
 import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
 import me.camdenorrb.minibus.listener.MiniListener
@@ -53,10 +54,10 @@ class MiniBus {
 		= listeners.forEach { register(it) }
 
 
-	inline fun <reified T : Any> register(action: ListenerAction<T>, priority: ListenerPriority = NORMAL)
-		= listenerTable.add(priority, action)
+	inline fun <reified T : Any> register(action: ListenerAction<Any>, priority: ListenerPriority = NORMAL)
+		= listenerTable.add<T>(action, priority)
 
-	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: (T) -> Unit)
+	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit)
 		= listenerTable.add(priority, block)
 
 
