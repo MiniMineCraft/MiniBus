@@ -12,9 +12,12 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
 
+private typealias ListenerMap = MutableMap<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
+
+
 class ListenerTable {
 
-	val map = mutableMapOf<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>()
+	val map: ListenerMap = mutableMapOf()
 
 
 	fun find(event: Any) = map.entries.find { it.key.isInstance(event) }
