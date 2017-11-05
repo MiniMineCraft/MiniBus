@@ -18,6 +18,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.jvmErasure
 
+// TODO: Use star projection more often
 
 class MiniBus {
 
@@ -35,18 +36,18 @@ class MiniBus {
 	}
 
 
-	fun unregister(action: ListenerAction<Any>)
-		= listenerTable.remove(action)
-
-	fun unregister(callable: KCallable<Any>)
+	fun unregister(callable: KCallable<*>)
 		= listenerTable.remove(callable)
+
+	fun unregister(action: ListenerAction<*>)
+		= listenerTable.remove(action)
 
 	fun unregister(lambda: Any.() -> Unit)
 		= listenerTable.remove(lambda::invoke)
 
 
 	fun unregister(listener: MiniListener) = listener::class.declaredFunctions.forEach {
-		if (it.findAnnotation<EventWatcher>() != null) unregister(it as KCallable<Any>)
+		if (it.findAnnotation<EventWatcher>() != null) unregister(it)
 	}
 
 
@@ -55,7 +56,7 @@ class MiniBus {
 
 
 	inline fun <reified T : Any> register(action: ListenerAction<T>, priority: ListenerPriority = NORMAL)
-		= listenerTable.add<T>(action, priority)
+		= listenerTable.add(action, priority)
 
 	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit)
 		= listenerTable.add(priority, block)

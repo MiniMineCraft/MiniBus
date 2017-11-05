@@ -11,12 +11,12 @@ import kotlin.system.measureNanoTime
 
 
 
-internal class BenchmarkEvent
+class BenchmarkEvent
 
-internal class TestEvent(var count: Int = 0, var abc: String = ""): CancellableMiniEvent()
+class TestEvent(var count: Int = 0, var abc: String = ""): CancellableMiniEvent()
 
 
-internal class MiniBusTest: MiniListener {
+class MiniBusTest: MiniListener {
 
 	val miniBus = MiniBus()
 

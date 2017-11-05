@@ -19,8 +19,6 @@
 .idea/**/uiDesigner.xml
 
 # Gradle:
-.idea/**/gradle.xml
-
 # CMake
 cmake-build-debug/
 
