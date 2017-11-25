@@ -3,8 +3,8 @@
 
 Depends: [ kotlin-stdlib-jre8 (1.2.0-rc-39), kotlin-reflect (1.2.0-rc-39) ]
 
-To Build: `mvn clean package`
+To Build: `gradle shadowjar`
 
-To Test/Benchmark `mvn clean test`
+To Test/Benchmark `gradle test`
 
-To compile and install locally: `mvn clean package install`
+To compile and install locally: `gradle install`
