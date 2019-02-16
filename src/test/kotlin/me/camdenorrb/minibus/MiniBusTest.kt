@@ -11,7 +11,9 @@ import kotlin.system.measureNanoTime
 
 
 
-class BenchmarkEvent
+open class BenchmarkEvent
+
+class GenericEvent(var called: Boolean = false) : BenchmarkEvent()
 
 class TestEvent(var count: Int = 0, var abc: String = ""): CancellableMiniEvent()
 
@@ -31,14 +33,22 @@ class MiniBusTest: MiniListener {
 		println("Count: ${calledEvent.count}  Order: ${calledEvent.abc}")
 
 		check(calledEvent.count == 6) { "Not all events were called!" }
-		check(calledEvent.abc == "aabbcc") { "The events were not called in order!" }
+		check(calledEvent.abc == "a1 a2 b1 b2 c1 c2") { "The events were not called in order!" }
 		check(calledEvent.isCancelled) { "Event was not cancelled after the last listener!" }
 
 
 		var totalTime = 0L
 		val benchmarkEvent = BenchmarkEvent()
 
-		/* Warm Up */ for (i in 0..100_000) miniBus(benchmarkEvent)
+		/*
+		val genericEvent: BenchmarkEvent = GenericEvent()
+		miniBus(genericEvent)
+
+		check((genericEvent as GenericEvent).called) { "Generic event wasn't called!" }
+		*/
+
+		/* Warm Up */
+		for (i in 0..100_000) miniBus(benchmarkEvent)
 
 		for (i in 1..1000) totalTime += measureNanoTime { miniBus(benchmarkEvent) }
 
@@ -47,7 +57,8 @@ class MiniBusTest: MiniListener {
 
 		val meow = "Meow"
 
-		/* Warm Up */ for (i in 0..100_000) miniBus(meow)
+		/* Warm Up */
+		for (i in 0..100_000) miniBus(meow)
 
 		for (i in 1..1000) totalTime += measureNanoTime { miniBus(meow) }
 		println("1000 * NonExistent Event { Average: ${totalTime / 1000}/ns Total: $totalTime/ns }")
@@ -61,41 +72,47 @@ class MiniBusTest: MiniListener {
 	@EventWatcher
 	fun BenchmarkEvent.onBenchMark() = Unit
 
+	@EventWatcher
+	fun GenericEvent.onGenericEvent() {
+		called = true
+	}
+
+
 
 	@EventWatcher(FIRST)
 	fun TestEvent.onTest1() {
 		count++
-		abc += 'a'
+		abc += "a1 "
 	}
 
 	@EventWatcher(FIRST)
 	fun TestEvent.onTest2() {
 		count++
-		abc += 'a'
+		abc += "a2 "
 	}
 
 	@EventWatcher(NORMAL)
 	fun TestEvent.onTest3() {
 		count++
-		abc += 'b'
+		abc += "b1 "
 	}
 
 	@EventWatcher(NORMAL)
 	fun TestEvent.onTest4() {
 		count++
-		abc += 'b'
+		abc += "b2 "
 	}
 
 	@EventWatcher(LAST)
 	fun TestEvent.onTest5() {
 		count++
-		abc += 'c'
+		abc += "c1 "
 	}
 
 	@EventWatcher(LAST)
 	fun TestEvent.onTest6() {
 		count++
-		abc += 'c'
+		abc += "c2"
 		isCancelled = true
 	}
 
