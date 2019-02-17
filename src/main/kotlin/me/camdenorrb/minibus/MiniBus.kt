@@ -12,7 +12,6 @@ import me.camdenorrb.minibus.listener.table.ListenerTable
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.KVisibility.PUBLIC
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.isAccessible
@@ -46,8 +45,10 @@ class MiniBus {
 		= listenerTable.remove(lambda::invoke)
 
 
-	fun unregister(listener: MiniListener) = listener::class.declaredFunctions.forEach {
-		if (it.findAnnotation<EventWatcher>() != null) unregister(it)
+	fun unregister(listener: MiniListener) {
+		listener::class.declaredFunctions.forEach {
+			if (it.findAnnotation<EventWatcher>() != null) { unregister(it) }
+		}
 	}
 
 
@@ -64,14 +65,17 @@ class MiniBus {
 
 	fun register(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 
-		if (it.visibility != PUBLIC) return@forEach
+		//if (it.visibility != PUBLIC) return@forEach
 
 		if (!it.isAccessible) it.isAccessible = true
 
 		val priority = it.findAnnotation<EventWatcher>()?.priority ?: return@forEach
 		val event = it.parameters[1].type.jvmErasure as? KClass<Any> ?: error("Unable to register event!")
 
+		//println("${listener::class.simpleName} $it")
+
 		listenerTable.add(event, listener, it as KFunction<Any>, priority)
+		//println(listenerTable[event]?.joinToString { it.action.callable.toString() })
 	}
 
 }

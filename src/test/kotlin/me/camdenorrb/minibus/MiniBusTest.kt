@@ -66,7 +66,14 @@ class MiniBusTest: MiniListener {
 	}
 
 	@After
-	fun tearDown() { miniBus.cleanUp() }
+	fun tearDown() {
+
+		miniBus.unregister(this)
+
+		if (miniBus.listenerTable.map.isNotEmpty()) {
+			error("Listeners not empty")
+		}
+	}
 
 
 	@EventWatcher

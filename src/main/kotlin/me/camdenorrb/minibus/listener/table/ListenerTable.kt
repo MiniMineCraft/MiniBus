@@ -4,9 +4,9 @@ package me.camdenorrb.minibus.listener.table
 
 import me.camdenorrb.minibus.listener.ListenerAction
 import me.camdenorrb.minibus.listener.ListenerAction.Lambda
+import me.camdenorrb.minibus.listener.ListenerEntry
 import me.camdenorrb.minibus.listener.ListenerPriority
 import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
-import me.camdenorrb.minibus.listener.ListenerPriority.PriorityComparator
 import java.util.*
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
@@ -14,52 +14,74 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.isSubclassOf
 
 
-private typealias ListenerMap = MutableMap<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
-private typealias ListenerMapEntry = MutableMap.MutableEntry<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
+//private typealias ListenerMapEntry = Map.Entry<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
 
 
 class ListenerTable {
 
-	val map: ListenerMap = mutableMapOf()
+	val map = mutableMapOf<KClass<out Any>, TreeSet<ListenerEntry<Any>>>()
 
 
-	fun find(event: Any): ListenerMapEntry? {
+	fun find(event: Any): TreeSet<ListenerEntry<Any>>? {
 		val eventClass = event::class
-		return map.entries.find { it.key.isSubclassOf(eventClass) }
+		return map.entries.find { it.key.isSubclassOf(eventClass) }?.value
 	}
 
 
-	inline fun <reified T : Any> entries() = this[T::class]?.entries
+	inline fun <reified T : Any> entries(): TreeSet<ListenerEntry<Any>>? {
+		return this[T::class]
+	}
 
-	inline fun <reified T : Any> entries(priority: ListenerPriority) = this[T::class]?.get(priority)
+	inline fun <reified T : Any> entries(priority: ListenerPriority): List<ListenerEntry<Any>>? {
+		return entries<T>()?.filter { it.priority == priority }
+	}
 
 
-	inline fun <reified T : Any> get() = this[T::class]
+	inline fun <reified T : Any> get(): TreeSet<ListenerEntry<Any>>? {
+		return this[T::class]
+	}
 
-	inline fun <reified T : Any> get(priority: ListenerPriority) = this[T::class]?.get(priority)
+	inline fun <reified T : Any> get(priority: ListenerPriority): List<ListenerEntry<Any>>? {
+		return get<T>()?.filter { it.priority == priority }
+	}
 
 
 	operator fun get(kClass: KClass<out Any>) = map[kClass]
 
 
-	fun call(event: Any) = find(event)?.value?.values?.forEach {
-		it.forEach { it(event) }
+	fun call(event: Any) {
+
+		/*map.forEach {
+			println("${it.key} [${it.value.joinToString { it.action.callable.toString() }}]")
+		}
+
+		println("----")*/
+
+
+		find(event)?.forEach {
+			it.action(event)
+		}
+		//println()
 	}
 
 
-	inline fun <reified T : Any> remove()
-		= map.remove(T::class)
-
-	inline fun <reified T : Any> remove(priority: ListenerPriority)
-		= this[T::class]?.remove(priority)
-
-
-	fun remove(action: ListenerAction<*>) = map.values.forEach {
-		it.values.forEach { it.remove(action) }
+	inline fun <reified T : Any> remove(): TreeSet<ListenerEntry<Any>>? {
+		return map.remove(T::class)
 	}
 
-	fun remove(callable: KCallable<*>) = map.values.forEach {
-		it.values.forEach { it.removeIf { it.callable == callable } }
+	inline fun <reified T : Any> remove(priority: ListenerPriority): Boolean? {
+		return this[T::class]?.removeIf { it.priority == priority }
+	}
+
+
+	fun remove(action: ListenerAction<*>) = map.values.removeIf { value ->
+		value.removeIf { it.action == action }
+		value.isEmpty()
+	}
+
+	fun remove(callable: KCallable<*>) = map.values.removeIf { value ->
+		value.removeIf { it.action.callable == callable }
+		value.isEmpty()
 	}
 
 
@@ -81,7 +103,7 @@ class ListenerTable {
 	}
 
 	fun add(clazz: KClass<Any>, action: ListenerAction<Any>, priority: ListenerPriority = NORMAL) {
-		map.getOrPut(clazz) { TreeMap(PriorityComparator) }.getOrPut(priority) { mutableListOf() }.add(action)
+		map.getOrPut(clazz) { TreeSet() }.add(ListenerEntry(priority, action))
 	}
 
 }
