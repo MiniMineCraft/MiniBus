@@ -11,9 +11,11 @@ import java.util.*
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
+import kotlin.reflect.full.isSubclassOf
 
 
 private typealias ListenerMap = MutableMap<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
+private typealias ListenerMapEntry = MutableMap.MutableEntry<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
 
 
 class ListenerTable {
@@ -21,7 +23,10 @@ class ListenerTable {
 	val map: ListenerMap = mutableMapOf()
 
 
-	fun find(event: Any) = map.entries.find { it.key.isInstance(event) }
+	fun find(event: Any): ListenerMapEntry? {
+		val eventClass = event::class
+		return map.entries.find { it.key.isSubclassOf(eventClass) }
+	}
 
 
 	inline fun <reified T : Any> entries() = this[T::class]?.entries
@@ -76,7 +81,7 @@ class ListenerTable {
 	}
 
 	fun add(clazz: KClass<Any>, action: ListenerAction<Any>, priority: ListenerPriority = NORMAL) {
-		map.getOrPut(clazz, { TreeMap(PriorityComparator) }).getOrPut(priority, { mutableListOf() }).add(action)
+		map.getOrPut(clazz) { TreeMap(PriorityComparator) }.getOrPut(priority) { mutableListOf() }.add(action)
 	}
 
 }

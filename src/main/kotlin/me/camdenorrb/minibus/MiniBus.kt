@@ -64,7 +64,7 @@ class MiniBus {
 
 	fun register(listener: MiniListener) = listener::class.declaredFunctions.forEach {
 
-		if (it.visibility != PUBLIC) return
+		if (it.visibility != PUBLIC) return@forEach
 
 		if (!it.isAccessible) it.isAccessible = true
 

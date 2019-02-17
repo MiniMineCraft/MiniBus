@@ -8,13 +8,17 @@ sealed class ListenerAction<in T : Any>(val callable: KCallable<Any>) : (T) -> U
 
 	class Lambda<T : Any>(val block: Lambda<T>.(T) -> Any): ListenerAction<T>(block::invoke) {
 
-		override fun invoke(event: T) { block(event) }
+		override fun invoke(event: T) {
+			block(event)
+		}
 
 	}
 
 	class Function<in T : Any>(val instance: Any, val function: KFunction<Any>): ListenerAction<T>(function) {
 
-		override fun invoke(event: T) { function.call(instance, event) }
+		override fun invoke(event: T) {
+			function.call(instance, event)
+		}
 
 	}
 
