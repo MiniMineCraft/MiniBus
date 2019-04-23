@@ -93,7 +93,7 @@ class ListenerTable {
 		this.add<T>(ListenerAction.Function(instance, function), priority)
 	}
 
-	inline fun <reified T : Any> add(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Any) {
+	inline fun <reified T : Any> add(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit) {
 		this.add<T>(Lambda(block) as Lambda<Any>, priority)
 	}
 

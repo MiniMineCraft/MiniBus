@@ -6,7 +6,7 @@ import kotlin.reflect.KFunction
 
 sealed class ListenerAction<in T : Any>(val callable: KCallable<Any>) : (T) -> Unit {
 
-	class Lambda<T : Any>(val block: Lambda<T>.(T) -> Any): ListenerAction<T>(block::invoke) {
+	class Lambda<T : Any>(val block: Lambda<T>.(T) -> Unit): ListenerAction<T>(block::invoke) {
 
 		override fun invoke(event: T) {
 			block(event)
