@@ -1,7 +1,7 @@
 package me.camdenorrb.minibus
 
-import me.camdenorrb.minibus.event.CancellableMiniEvent
 import me.camdenorrb.minibus.event.EventWatcher
+import me.camdenorrb.minibus.event.type.Cancellable
 import me.camdenorrb.minibus.listener.ListenerPriority.*
 import me.camdenorrb.minibus.listener.MiniListener
 import org.junit.After
@@ -15,7 +15,7 @@ open class BenchmarkEvent
 
 class GenericEvent(var called: Boolean = false) : BenchmarkEvent()
 
-class TestEvent(var count: Int = 0, var abc: String = ""): CancellableMiniEvent()
+class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
 
 
 class MiniBusTest: MiniListener {

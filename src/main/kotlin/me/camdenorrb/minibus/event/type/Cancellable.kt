@@ -1,10 +1,10 @@
-package me.camdenorrb.minibus.event
+package me.camdenorrb.minibus.event.type
 
 /**
  * Created by camdenorrb on 3/5/17.
  */
 
-open class CancellableMiniEvent {
+open class Cancellable {
 
 	var isCancelled = false
 

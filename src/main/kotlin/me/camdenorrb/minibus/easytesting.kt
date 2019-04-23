@@ -1,7 +1,7 @@
 package me.camdenorrb.minibus
 
-import me.camdenorrb.minibus.event.CancellableMiniEvent
 import me.camdenorrb.minibus.event.EventWatcher
+import me.camdenorrb.minibus.event.type.Cancellable
 import me.camdenorrb.minibus.listener.ListenerAction
 import me.camdenorrb.minibus.listener.ListenerEntry
 import me.camdenorrb.minibus.listener.ListenerPriority.FIRST
@@ -13,7 +13,7 @@ import me.camdenorrb.minibus.type.TypeHolder
 class GenericThing<S : Any>(val value: S)
 
 class Thing
-class TestEvent(var count: Int = 0, var abc: String = ""): CancellableMiniEvent()
+class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
 
 
 class Listener : MiniListener {
