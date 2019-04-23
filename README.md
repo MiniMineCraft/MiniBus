@@ -1,7 +1,7 @@
 
 ## MineMineCraft's official EventBus. [![Travis](https://img.shields.io/travis/MiniMineCraft/MiniBus.svg)](https://travis-ci.org/MiniMineCraft/MiniBus)
 
-Depends: [ kotlin-stdlib-jre8 (1.3.20), kotlin-reflect (1.3.20) ]
+Depends: [ kotlin-stdlib-jre8 (1.3.30), kotlin-reflect (1.3.30) ]
 
 To Build: `gradle shadowjar`
 
