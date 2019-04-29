@@ -11,14 +11,14 @@ import kotlin.system.measureNanoTime
 
 
 
-open class BenchmarkEvent
+internal open class BenchmarkEvent
 
-class GenericEvent(var called: Boolean = false) : BenchmarkEvent()
+internal class GenericEvent(var called: Boolean = false) : BenchmarkEvent()
 
-class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
+internal class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
 
 
-class MiniBusTest: MiniListener {
+internal class MiniBusTest: MiniListener {
 
 	val miniBus = MiniBus()
 

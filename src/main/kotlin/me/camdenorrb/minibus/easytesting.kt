@@ -10,13 +10,13 @@ import me.camdenorrb.minibus.listener.MiniListener
 import me.camdenorrb.minibus.type.TypeHolder
 
 
-class GenericThing<S : Any>(val value: S)
+internal class GenericThing<S : Any>(val value: S)
 
-class Thing
-class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
+internal class Thing
+internal class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
 
 
-class Listener : MiniListener {
+internal class Listener : MiniListener {
 
 	@EventWatcher
 	fun test(event: TestEvent) {
