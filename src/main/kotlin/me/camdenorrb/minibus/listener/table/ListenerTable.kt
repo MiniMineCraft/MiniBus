@@ -7,7 +7,7 @@ import me.camdenorrb.minibus.listener.ListenerAction.Lambda
 import me.camdenorrb.minibus.listener.ListenerEntry
 import me.camdenorrb.minibus.listener.ListenerPriority
 import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
-import java.util.*
+import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -19,16 +19,16 @@ import kotlin.reflect.full.isSubclassOf
 
 class ListenerTable {
 
-	val map = mutableMapOf<KClass<out Any>, TreeSet<ListenerEntry<Any>>>()
+	val map = mutableMapOf<KClass<out Any>, ConcurrentSkipListSet<ListenerEntry<Any>>>()
 
 
-	fun find(event: Any): TreeSet<ListenerEntry<Any>>? {
+	fun find(event: Any): Set<ListenerEntry<Any>>? {
 		val eventClass = event::class
 		return map.entries.find { it.key.isSubclassOf(eventClass) }?.value
 	}
 
 
-	inline fun <reified T : Any> entries(): TreeSet<ListenerEntry<Any>>? {
+	inline fun <reified T : Any> entries(): Set<ListenerEntry<Any>>? {
 		return this[T::class]
 	}
 
@@ -37,7 +37,7 @@ class ListenerTable {
 	}
 
 
-	inline fun <reified T : Any> get(): TreeSet<ListenerEntry<Any>>? {
+	inline fun <reified T : Any> get(): Set<ListenerEntry<Any>>? {
 		return this[T::class]
 	}
 
@@ -65,7 +65,7 @@ class ListenerTable {
 	}
 
 
-	inline fun <reified T : Any> remove(): TreeSet<ListenerEntry<Any>>? {
+	inline fun <reified T : Any> remove(): Set<ListenerEntry<Any>>? {
 		return map.remove(T::class)
 	}
 
@@ -103,7 +103,7 @@ class ListenerTable {
 	}
 
 	fun add(clazz: KClass<Any>, action: ListenerAction<Any>, priority: ListenerPriority = NORMAL) {
-		map.getOrPut(clazz) { TreeSet() }.add(ListenerEntry(priority, action))
+		map.getOrPut(clazz) { ConcurrentSkipListSet() }.add(ListenerEntry(priority, action))
 	}
 
 }
