@@ -9,9 +9,10 @@ import me.camdenorrb.minibus.listener.ListenerPriority
 import me.camdenorrb.minibus.listener.ListenerPriority.NORMAL
 import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.reflect.KCallable
-import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.KType
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.typeOf
 
 
 //private typealias ListenerMapEntry = Map.Entry<KClass<out Any>, TreeMap<ListenerPriority, MutableList<ListenerAction<Any>>>>
@@ -19,37 +20,42 @@ import kotlin.reflect.full.isSubclassOf
 
 class ListenerTable {
 
-	val map = mutableMapOf<KClass<out Any>, ConcurrentSkipListSet<ListenerEntry<Any>>>()
+	val map = mutableMapOf<KType, ConcurrentSkipListSet<ListenerEntry<Any>>>()
 
 
-	fun find(event: Any): Set<ListenerEntry<Any>>? {
-		val eventClass = event::class
-		return map.entries.find { it.key.isSubclassOf(eventClass) }?.value
+	@ExperimentalStdlibApi
+	inline fun <reified T> find(): Set<ListenerEntry<Any>>? {
+		return map.entries.find { it.key.isSubtypeOf(typeOf<T>()) }?.value
 	}
 
 
+	@ExperimentalStdlibApi
 	inline fun <reified T : Any> entries(): Set<ListenerEntry<Any>>? {
-		return this[T::class]
+		return map[typeOf<T>()]
 	}
 
+	@ExperimentalStdlibApi
 	inline fun <reified T : Any> entries(priority: ListenerPriority): List<ListenerEntry<Any>>? {
 		return entries<T>()?.filter { it.priority == priority }
 	}
 
 
-	inline fun <reified T : Any> get(): Set<ListenerEntry<Any>>? {
-		return this[T::class]
+	@ExperimentalStdlibApi
+	inline fun <reified T> get(): Set<ListenerEntry<Any>>? {
+		return map[typeOf<T>()]
 	}
 
-	inline fun <reified T : Any> get(priority: ListenerPriority): List<ListenerEntry<Any>>? {
-		return get<T>()?.filter { it.priority == priority }
+	@ExperimentalStdlibApi
+	inline fun <reified T> get(priority: ListenerPriority): List<ListenerEntry<Any>>? {
+		return map[typeOf<T>()]?.filter { it.priority == priority }
 	}
 
 
-	operator fun get(kClass: KClass<out Any>) = map[kClass]
+	//inline operator fun <reified T> get() = map[typeOf<T>()]
 
 
-	fun call(event: Any) {
+	@ExperimentalStdlibApi
+	inline fun <reified T> call(event: Any) {
 
 		/*map.forEach {
 			println("${it.key} [${it.value.joinToString { it.action.callable.toString() }}]")
@@ -58,19 +64,22 @@ class ListenerTable {
 		println("----")*/
 
 
-		find(event)?.forEach {
+		find<T>()?.forEach {
 			it.action(event)
 		}
 		//println()
 	}
 
 
-	inline fun <reified T : Any> remove(): Set<ListenerEntry<Any>>? {
-		return map.remove(T::class)
+	@ExperimentalStdlibApi
+	inline fun <reified T> remove(): Set<ListenerEntry<Any>>? {
+		return map.remove(typeOf<T>())
 	}
 
-	inline fun <reified T : Any> remove(priority: ListenerPriority): Boolean? {
-		return this[T::class]?.removeIf { it.priority == priority }
+
+	@ExperimentalStdlibApi
+	inline fun <reified T> remove(priority: ListenerPriority): Boolean? {
+		return map[typeOf<T>()]?.removeIf { it.priority == priority }
 	}
 
 
@@ -85,25 +94,29 @@ class ListenerTable {
 	}
 
 
+	@ExperimentalStdlibApi
 	inline fun <reified T : Any> add(action: ListenerAction<T>, priority: ListenerPriority = NORMAL) {
-		this.add(T::class as KClass<Any>, action as ListenerAction<Any>, priority)
+		this.add(typeOf<T>(), action as ListenerAction<Any>, priority)
 	}
 
+	@ExperimentalStdlibApi
 	inline fun <reified T : Any> add(instance: Any, function: KFunction<Any>, priority: ListenerPriority = NORMAL) {
 		this.add<T>(ListenerAction.Function(instance, function), priority)
 	}
 
+	@ExperimentalStdlibApi
 	inline fun <reified T : Any> add(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit) {
 		this.add<T>(Lambda(block) as Lambda<Any>, priority)
 	}
 
 
-	fun add(clazz: KClass<Any>, instance: Any, function: KFunction<Any>, priority: ListenerPriority = NORMAL) {
-		this.add(clazz, ListenerAction.Function(instance, function), priority)
+
+	fun add(type: KType, instance: Any, function: KFunction<Any>, priority: ListenerPriority = NORMAL) {
+		this.add(type, ListenerAction.Function(instance, function), priority)
 	}
 
-	fun add(clazz: KClass<Any>, action: ListenerAction<Any>, priority: ListenerPriority = NORMAL) {
-		map.getOrPut(clazz) { ConcurrentSkipListSet() }.add(ListenerEntry(priority, action))
+	fun add(type: KType, action: ListenerAction<Any>, priority: ListenerPriority = NORMAL) {
+		map.getOrPut(type) { ConcurrentSkipListSet() }.add(ListenerEntry(priority, action))
 	}
 
 }

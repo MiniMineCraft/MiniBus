@@ -4,7 +4,8 @@ data class ListenerEntry<T : Any>(val priority: ListenerPriority, val action: Li
 
 	override fun compareTo(other: ListenerEntry<*>): Int {
 		val priority2 = other.priority
-		return if (priority == priority2) 1 else priority.compareTo(priority2)
+		// A weird fix for removing listener entries, the hashcode comparison
+		return if (priority == priority2) this.hashCode().compareTo(other.hashCode()) else priority.compareTo(priority2)
 	}
 
 }

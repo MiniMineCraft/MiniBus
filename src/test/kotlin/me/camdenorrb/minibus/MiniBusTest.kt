@@ -13,7 +13,7 @@ import kotlin.system.measureNanoTime
 
 internal open class BenchmarkEvent
 
-internal class GenericEvent(var called: Boolean = false) : BenchmarkEvent()
+internal class GenericEvent<T>(var called: Boolean = false) : BenchmarkEvent()
 
 internal class TestEvent(var count: Int = 0, var abc: String = ""): Cancellable()
 
@@ -26,26 +26,31 @@ internal class MiniBusTest: MiniListener {
 	fun setUp() { miniBus.register(this) }
 
 	@Test
+	@ExperimentalStdlibApi
 	fun eventTest() {
 
 		val calledEvent = miniBus(TestEvent())
 
 		println("Count: ${calledEvent.count}  Order: ${calledEvent.abc}")
 
-		check(calledEvent.count == 6) { "Not all events were called!" }
-		check(calledEvent.abc == "a1 a2 b1 b2 c1 c2") { "The events were not called in order!" }
+		check(calledEvent.count == 3) { "Not all events were called!" }
+		check(calledEvent.abc == "a b c") { "The events were not called in order!" }
 		check(calledEvent.isCancelled) { "Event was not cancelled after the last listener!" }
 
 
 		var totalTime = 0L
 		val benchmarkEvent = BenchmarkEvent()
 
-		/*
-		val genericEvent: BenchmarkEvent = GenericEvent()
-		miniBus(genericEvent)
 
-		check((genericEvent as GenericEvent).called) { "Generic event wasn't called!" }
-		*/
+		// Generic tests
+		val negateTest = miniBus(GenericEvent<Int>())
+		check(!negateTest.called) { "Negated generic event was called!" }
+
+		val positiveTest = miniBus(GenericEvent<String>())
+		check(positiveTest.called) { "Positive generic event wasn't called!" }
+
+
+		// Benchmark
 
 		/* Warm Up */
 		for (i in 0..100_000) miniBus(benchmarkEvent)
@@ -70,8 +75,8 @@ internal class MiniBusTest: MiniListener {
 
 		miniBus.unregister(this)
 
-		if (miniBus.listenerTable.map.isNotEmpty()) {
-			error("Listeners not empty")
+		check(miniBus.listenerTable.map.isEmpty()) {
+			"Listeners not empty ${miniBus.listenerTable.map}"
 		}
 	}
 
@@ -80,7 +85,7 @@ internal class MiniBusTest: MiniListener {
 	fun BenchmarkEvent.onBenchMark() = Unit
 
 	@EventWatcher
-	fun GenericEvent.onGenericEvent() {
+	fun GenericEvent<String>.onGenericEvent() {
 		called = true
 	}
 
@@ -89,37 +94,19 @@ internal class MiniBusTest: MiniListener {
 	@EventWatcher(FIRST)
 	fun TestEvent.onTest1() {
 		count++
-		abc += "a1 "
-	}
-
-	@EventWatcher(FIRST)
-	fun TestEvent.onTest2() {
-		count++
-		abc += "a2 "
+		abc += "a "
 	}
 
 	@EventWatcher(NORMAL)
 	fun TestEvent.onTest3() {
 		count++
-		abc += "b1 "
-	}
-
-	@EventWatcher(NORMAL)
-	fun TestEvent.onTest4() {
-		count++
-		abc += "b2 "
-	}
-
-	@EventWatcher(LAST)
-	fun TestEvent.onTest5() {
-		count++
-		abc += "c1 "
+		abc += "b "
 	}
 
 	@EventWatcher(LAST)
 	fun TestEvent.onTest6() {
 		count++
-		abc += "c2"
+		abc += "c"
 		isCancelled = true
 	}
 
