@@ -26,7 +26,6 @@ internal class MiniBusTest: MiniListener {
 	fun setUp() { miniBus.register(this) }
 
 	@Test
-	@ExperimentalStdlibApi
 	fun eventTest() {
 
 		val calledEvent = miniBus(TestEvent())

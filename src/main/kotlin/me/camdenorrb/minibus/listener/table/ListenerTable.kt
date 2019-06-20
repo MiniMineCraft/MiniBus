@@ -23,29 +23,29 @@ class ListenerTable {
 	val map = mutableMapOf<KType, ConcurrentSkipListSet<ListenerEntry<Any>>>()
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T> find(): Set<ListenerEntry<Any>>? {
 		return map.entries.find { it.key.isSubtypeOf(typeOf<T>()) }?.value
 	}
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T : Any> entries(): Set<ListenerEntry<Any>>? {
 		return map[typeOf<T>()]
 	}
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T : Any> entries(priority: ListenerPriority): List<ListenerEntry<Any>>? {
 		return entries<T>()?.filter { it.priority == priority }
 	}
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T> get(): Set<ListenerEntry<Any>>? {
 		return map[typeOf<T>()]
 	}
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T> get(priority: ListenerPriority): List<ListenerEntry<Any>>? {
 		return map[typeOf<T>()]?.filter { it.priority == priority }
 	}
@@ -54,7 +54,7 @@ class ListenerTable {
 	//inline operator fun <reified T> get() = map[typeOf<T>()]
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T> call(event: Any) {
 
 		/*map.forEach {
@@ -71,13 +71,13 @@ class ListenerTable {
 	}
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T> remove(): Set<ListenerEntry<Any>>? {
 		return map.remove(typeOf<T>())
 	}
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T> remove(priority: ListenerPriority): Boolean? {
 		return map[typeOf<T>()]?.removeIf { it.priority == priority }
 	}
@@ -94,17 +94,17 @@ class ListenerTable {
 	}
 
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T : Any> add(action: ListenerAction<T>, priority: ListenerPriority = NORMAL) {
 		this.add(typeOf<T>(), action as ListenerAction<Any>, priority)
 	}
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T : Any> add(instance: Any, function: KFunction<Any>, priority: ListenerPriority = NORMAL) {
 		this.add<T>(ListenerAction.Function(instance, function), priority)
 	}
 
-	@ExperimentalStdlibApi
+	
 	inline fun <reified T : Any> add(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit) {
 		this.add<T>(Lambda(block) as Lambda<Any>, priority)
 	}

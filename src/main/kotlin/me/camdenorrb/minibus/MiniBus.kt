@@ -27,7 +27,7 @@ class MiniBus {
 	}
 
 
-	@ExperimentalStdlibApi
+
 	inline operator fun <reified T : Any> invoke(event: T): T {
 		listenerTable.call<T>(event)
 		return event
@@ -56,11 +56,11 @@ class MiniBus {
 		= listeners.forEach { register(it) }
 
 
-	@ExperimentalStdlibApi
+
 	inline fun <reified T : Any> register(action: ListenerAction<T>, priority: ListenerPriority = NORMAL)
 		= listenerTable.add(action, priority)
 
-	@ExperimentalStdlibApi
+
 	inline fun <reified T : Any> register(priority: ListenerPriority = NORMAL, noinline block: Lambda<T>.(T) -> Unit)
 		= listenerTable.add(priority, block)
 
