@@ -77,7 +77,6 @@ class MiniBus {
 
 		val event = it.parameters[1].type
 		//println("${listener::class.simpleName} $it")
-		println("Registered $event")
 
 		listenerTable.add(event, listener, it as KFunction<Any>, priority)
 		//println(listenerTable[event]?.joinToString { it.action.callable.toString() })
