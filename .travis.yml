@@ -10,5 +10,10 @@ sudo: false
 # Skips install "gradle assemble"
 install: true
 
+# Sets up gradle wrapper
+before_install:
+  - chmod +x gradlew
+  - chmod +x gradle/wrapper/gradle-wrapper.jar
 
-script: "gradle test --info"
+# Test
+script: "./gradle test build --info"

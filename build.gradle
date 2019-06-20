@@ -43,6 +43,7 @@ compileTestKotlin {
 }
 
 
+// To fix Travis
 task wrapper(type: Wrapper) {
 	gradleVersion = "5.4.1"
 }
