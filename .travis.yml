@@ -16,4 +16,4 @@ before_install:
   - chmod +x gradle/wrapper/gradle-wrapper.jar
 
 # Test
-script: "./gradle test build --info"
+script: "./gradlew test build --info"
