@@ -2,6 +2,7 @@
 
 package me.camdenorrb.minibus.listener.table
 
+import me.camdenorrb.kcommons.ext.isGenericSupertypeOf
 import me.camdenorrb.minibus.listener.ListenerAction
 import me.camdenorrb.minibus.listener.ListenerAction.Lambda
 import me.camdenorrb.minibus.listener.ListenerEntry
@@ -11,7 +12,6 @@ import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.reflect.KCallable
 import kotlin.reflect.KFunction
 import kotlin.reflect.KType
-import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.typeOf
 
 
@@ -22,12 +22,11 @@ class ListenerTable {
 
 	val map = mutableMapOf<KType, ConcurrentSkipListSet<ListenerEntry<Any>>>()
 
-
 	
-	inline fun <reified T> find(): Set<ListenerEntry<Any>>? {
-		return map.entries.find { it.key.isSubtypeOf(typeOf<T>()) }?.value
+	inline fun <reified T> find(): List<ListenerEntry<Any>>? {
+		val type = typeOf<T>()
+		return map.filterKeys { it == type || it.isGenericSupertypeOf(type) }.values.flatten()
 	}
-
 
 	
 	inline fun <reified T : Any> entries(): Set<ListenerEntry<Any>>? {
@@ -62,7 +61,6 @@ class ListenerTable {
 		}
 
 		println("----")*/
-
 
 		find<T>()?.forEach {
 			it.action(event)

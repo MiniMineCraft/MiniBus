@@ -10,7 +10,6 @@ import org.junit.Test
 import kotlin.system.measureNanoTime
 
 
-
 internal open class BenchmarkEvent
 
 internal class GenericEvent<T>(var called: Boolean = false) : BenchmarkEvent()
@@ -50,6 +49,7 @@ internal class MiniBusTest: MiniListener {
 
 
 		// Benchmark
+
 
 		/* Warm Up */
 		for (i in 0..100_000) miniBus(benchmarkEvent)
