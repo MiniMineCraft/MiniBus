@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  - oraclejdk8
+  - openjdk11
 
 
 # Stops Travis CI from making a virtual machine for each build.
