@@ -42,16 +42,5 @@ dependencies {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "14"
     kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalStdlibApi"]
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "14"
-}
-
-
-// To fix Travis
-wrapper {
-	gradleVersion = "6.5.1"
 }
