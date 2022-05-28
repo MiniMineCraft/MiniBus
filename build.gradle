@@ -43,7 +43,7 @@ dependencies {
 
 compileKotlin {
     kotlinOptions.jvmTarget = "14"
-	kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalStdlibApi"]
+    kotlinOptions.freeCompilerArgs = ["-Xuse-experimental=kotlin.ExperimentalStdlibApi"]
 }
 
 compileTestKotlin {
