@@ -28,10 +28,10 @@ repositories {
 
 dependencies {
 
-	//testCompile "org.jetbrains.kotlin:kotlin-test"
-	testCompile "org.jetbrains.kotlin:kotlin-test-junit"
-	testCompile "org.jetbrains.kotlin:kotlin-reflect"
-	testCompile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	//testImplementation "org.jetbrains.kotlin:kotlin-test"
+	testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
+	testImplementation "org.jetbrains.kotlin:kotlin-reflect"
+	testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	
 	implementation "org.jetbrains.kotlin:kotlin-reflect"
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
