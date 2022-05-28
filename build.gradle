@@ -14,7 +14,7 @@ buildscript {
 }
 
 apply plugin: 'idea'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 apply plugin: 'kotlin'
 
 repositories {
